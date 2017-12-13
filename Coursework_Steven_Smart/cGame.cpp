@@ -34,6 +34,7 @@ cGame* cGame::getInstance()
 }
 
 int Steps = 0;
+std::string StepsStr = std::to_string(Steps);
 int Win = 0;
 bool Lose = false;
 bool Menu = true;
@@ -85,13 +86,14 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	{
 		theFontMgr->addFont(fontList[fonts], fontsToUse[fonts], 32);
 	}
-	gameTextList = { "The Maze in Time", "Steps","WIN!","LOSE!","Press Space to Begin, use the arrow keys to move. try to finish within 100 moves."};
+	gameTextList = { "The Maze in Time", "Steps","WIN!","LOSE!","Press Space to Begin, use the arrow keys to move. try to finish within 100 moves.", "StepsStr"};
 	
 	theTextureMgr->addTexture("Title", theFontMgr->getFont("spaceAge")->createTextTexture(theRenderer, gameTextList[0], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
-	theTextureMgr->addTexture("Steps", theFontMgr->getFont("spaceAge")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 255, 255, 255, 255 }, { 0, 0, 0, 0 }));
+	theTextureMgr->addTexture("Step", theFontMgr->getFont("spaceAge")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 255, 255, 255, 255 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("Win", theFontMgr->getFont("spaceAge")->createTextTexture(theRenderer, gameTextList[2], SOLID, { 255, 255, 255, 255 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("Lose", theFontMgr->getFont("spaceAge")->createTextTexture(theRenderer, gameTextList[3], SOLID, { 255, 255, 255, 255 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("Menu", theFontMgr->getFont("spaceAge")->createTextTexture(theRenderer, gameTextList[4], SOLID, { 255, 255, 255, 255 }, { 0, 0, 0, 0 }));
+	theTextureMgr->addTexture("Steps", theFontMgr->getFont("spaceAge")->createTextTexture(theRenderer, gameTextList[5], SOLID, { 255, 255, 255, 255 }, { 0, 0, 0, 0 }));
 	// Load game sounds
 	soundList = { "theme", "shot", "explosion" };
 	soundTypes = { MUSIC, SFX, SFX };
@@ -161,18 +163,21 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	}
 	// Render the Title
 	cTexture* tempTextTexture = theTextureMgr->getTexture("Title");
-	cTexture* stepTextTexture = theTextureMgr->getTexture("Steps");
+	cTexture* stepTextTexture = theTextureMgr->getTexture("Step");
 	cTexture* winTextTexture = theTextureMgr->getTexture("Win");
 	cTexture* loseTextTexture = theTextureMgr->getTexture("Lose");
 	cTexture* menuTextTexture = theTextureMgr->getTexture("Menu");
+	cTexture* stepsTextTexture = theTextureMgr->getTexture("Steps");
 	SDL_Rect pos = { 0, 0, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
 	SDL_Rect pos2 = { 416, 0, stepTextTexture->getTextureRect().w, stepTextTexture->getTextureRect().h };
 	SDL_Rect pos3 = { 384, 224, winTextTexture->getTextureRect().w, winTextTexture->getTextureRect().h };
 	SDL_Rect pos4 = { 384, 224, loseTextTexture->getTextureRect().w, loseTextTexture->getTextureRect().h };
 	SDL_Rect pos5 = { 416, 0, menuTextTexture->getTextureRect().w, menuTextTexture->getTextureRect().h };
+	SDL_Rect pos6 = { 512, 0, stepsTextTexture->getTextureRect().w, stepsTextTexture->getTextureRect().h };
 	FPoint scale = { 1, 1 };
 	tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
 	stepTextTexture->renderTexture(theRenderer, stepTextTexture->getTexture(), &stepTextTexture->getTextureRect(), &pos2, scale);
+	//stepsTextTexture->renderTexture(theRenderer, stepsTextTexture->getTexture(), &stepsTextTexture->getTextureRect(), &pos6, scale);
 
 	if (Win = 0)
 	{
@@ -201,7 +206,10 @@ void cGame::update()
 
 void cGame::update(double deltaTime)
 {
+	//Convert Steps to string
+    StepsStr = std::to_string(Steps);
 	// Update the visibility and position of each asteriod
+
 	vector<cAsteroid*>::iterator asteroidIterator = theAsteroids.begin();
 	while (asteroidIterator != theAsteroids.end())
 	{
@@ -451,7 +459,7 @@ bool cGame::getInput(bool theLoop)
 					theBullets[numBullets]->setActive(true);
 					cout << "Bullet added to Vector at position - x: " << theRocket.getBoundingRect().x << " y: " << theRocket.getBoundingRect().y << endl;
                     */
-					cout << "Steps Taken:" << Steps;
+					cout << "Steps Taken:" << Steps,StepsStr;
 				}
 				theSoundMgr->getSnd("shot")->play(0);
 				break;
